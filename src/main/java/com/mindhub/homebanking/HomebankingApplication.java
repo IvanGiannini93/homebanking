@@ -22,7 +22,7 @@ public class HomebankingApplication {
 	@Bean
 	public CommandLineRunner init(ClientRepository clientRepository, AccountRepository accountRepository,
 								  TransactionRepository transactionRepository, LoanRepository loanRepository,
-								  ClientLoanRepository clientLoanRepository){
+								  ClientLoanRepository clientLoanRepository, CardRepository cardRepository){
 		return args -> {
 			Client client = new Client();
 			client.setFirstName("Melba");
@@ -76,6 +76,27 @@ public class HomebankingApplication {
 			clientLoanRepository.save(clientLoan3);
 			clientLoanRepository.save(clientLoan4);
 
+			CardType cardDebit = CardType.DEBIT;
+			CardColor cardColor = CardColor.GOLD;
+			LocalDate fromDate = LocalDate.now();
+			LocalDate thruDate = fromDate.plusYears(5);
+			String cardHolder = client.getFirstName() + client.getLastName();
+			String cardNumber1 = "1111222233334444";
+			int cvv = 123;
+			Card card1 = new Card(cardHolder, cardDebit, cardColor, cardNumber1, cvv, thruDate, fromDate, client);
+			CardType cardCredit = CardType.CREDIT;
+			CardColor cardColor2 = CardColor.TITANIUM;
+			String cardNumber2 = "5555666677778888";
+			int cvv2 = 456;
+			Card card2 = new Card(cardHolder, cardCredit, cardColor2, cardNumber2, cvv2, thruDate, fromDate, client);
+			CardColor cardColor3 = CardColor.SILVER;
+			String cardHolder2 = client2.getFirstName() + client2.getLastName();
+			String cardNumber3 = "9999111122223333";
+			int cvv3 = 789;
+			Card card3 = new Card(cardHolder2, cardCredit, cardColor3, cardNumber3, cvv3, thruDate, fromDate, client2);
+			cardRepository.save(card1);
+			cardRepository.save(card2);
+			cardRepository.save(card3);
 		};
 	}
 }
