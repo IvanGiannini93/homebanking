@@ -9,8 +9,8 @@ import java.time.LocalDate;
 public class CardDTO {
     private Long id;
     private String cardHolder;
-    private CardType type;
-    private CardColor color;
+    private CardType cardType;
+    private CardColor cardColor;
     private String number;
     private int cvv;
     private LocalDate thruDate;
@@ -21,8 +21,8 @@ public class CardDTO {
     public CardDTO(Card card) {
         id = card.getId();
         cardHolder = card.getCardHolder();
-        type = card.getCardType();
-        color = card.getCardColor();
+        cardType = card.getCardType();
+        cardColor = card.getCardColor();
         number = card.getNumber();
         cvv = card.getCvv();
         thruDate = card.getThruDate();
@@ -38,11 +38,11 @@ public class CardDTO {
     }
 
     public CardType getCardType() {
-        return type;
+        return cardType;
     }
 
     public CardColor getCardColor() {
-        return color;
+        return cardColor;
     }
 
     public String getNumber() {
@@ -60,4 +60,20 @@ public class CardDTO {
     public LocalDate getFromDate() {
         return fromDate;
     }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "id=" + id +
+                ", cardHolder='" + cardHolder + '\'' +
+                ", cardType=" + cardType +
+                ", cardColor=" + cardColor +
+                ", number='" + number + '\'' +
+                ", cvv=" + cvv +
+                ", thruDate=" + thruDate +
+                ", fromDate=" + fromDate +
+                '}';
+
+    }
 }
+

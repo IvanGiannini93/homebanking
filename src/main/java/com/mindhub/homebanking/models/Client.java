@@ -93,6 +93,7 @@ public class Client {
     }
 
     public void addCard(Card card) {
+        card.setClient(this);
         this.cards.add(card);
     }
 }

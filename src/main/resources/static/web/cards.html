@@ -89,7 +89,7 @@
                     <div class="row">
                         <div v-for="card in debitCards" class="plastic-card col-12 col-md-3 mt-2">
                             <div
-                                v-bind:class="['plastic-card__front', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__front', 'plastic-card__part', card.cardColor.toLowerCase() +'-plastic-card']">
                                 <div class="plastic-card__square">
                                     <span class="plastic-card__label">{{ card.type}} {{ card.color }}</span>
                                 </div>
@@ -106,7 +106,7 @@
                             </div>
 
                             <div
-                                v-bind:class="['plastic-card__back', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__back', 'plastic-card__part', card.cardColor.toLowerCase() +'-plastic-card']">
                                 <div class="plastic-card__black-line"></div>
                                 <div class="plastic-card__back-content">
                                     <div class="plastic-card__secret">
@@ -129,7 +129,7 @@
                     <div class="row">
                         <div v-for="card in creditCards" class="plastic-card col-12 col-md-3 mt-2">
                             <div
-                                v-bind:class="['plastic-card__front', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__front', 'plastic-card__part', card.cardColor.toLowerCase() +'-plastic-card']">
                                 <div class="plastic-card__square">
                                     <span class="plastic-card__label">{{ card.type}} {{ card.color }}</span>
                                 </div>
@@ -146,7 +146,7 @@
                             </div>
 
                             <div
-                                v-bind:class="['plastic-card__back', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__back', 'plastic-card__part', card.cardColor.toLowerCase() +'-plastic-card']">
                                 <div class="plastic-card__black-line"></div>
                                 <div class="plastic-card__back-content">
                                     <div class="plastic-card__secret">

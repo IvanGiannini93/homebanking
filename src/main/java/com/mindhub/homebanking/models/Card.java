@@ -15,8 +15,8 @@ public class Card {
     @JoinColumn(name = "client_id")
     private Client client;
     private String cardHolder;
-    private CardType type;
-    private CardColor color;
+    private CardType cardType;
+    private CardColor cardColor;
     private String number;
     private int cvv;
     private LocalDate thruDate;
@@ -25,11 +25,21 @@ public class Card {
     public Card() {
     }
 
-    public Card(String cardHolder, CardType cardType, CardColor cardColor, String number, int cvv,
-                LocalDate thruDate, LocalDate fromDate,Client client) {
+    public Card(String cardHolder, CardType cardType, CardColor cardColor, String number, int cvv, LocalDate thruDate, LocalDate fromDate) {
         this.cardHolder = cardHolder;
-        this.type = cardType;
-        this.color = cardColor;
+        this.cardType = cardType;
+        this.cardColor = cardColor;
+        this.number = number;
+        this.cvv = cvv;
+        this.thruDate = thruDate;
+        this.fromDate = fromDate;
+    }
+
+    public Card(String cardHolder, CardType cardType, CardColor cardColor, String number, int cvv,
+                LocalDate thruDate, LocalDate fromDate, Client client) {
+        this.cardHolder = cardHolder;
+        this.cardType = cardType;
+        this.cardColor = cardColor;
         this.number = number;
         this.cvv = cvv;
         this.thruDate = thruDate;
@@ -50,19 +60,19 @@ public class Card {
     }
 
     public CardType getCardType() {
-        return type;
+        return cardType;
     }
 
     public void setCardType(CardType cardType) {
-        this.type = cardType;
+        this.cardType = cardType;
     }
 
     public CardColor getCardColor() {
-        return color;
+        return cardColor;
     }
 
     public void setCardColor(CardColor cardColor) {
-        this.color = cardColor;
+        this.cardColor = cardColor;
     }
 
     public String getNumber() {
@@ -103,5 +113,20 @@ public class Card {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "id=" + id +
+                ", client=" + client +
+                ", cardHolder='" + cardHolder + '\'' +
+                ", cardType=" + cardType +
+                ", cardColor=" + cardColor +
+                ", number='" + number + '\'' +
+                ", cvv=" + cvv +
+                ", thruDate=" + thruDate +
+                ", fromDate=" + fromDate +
+                '}';
     }
 }
