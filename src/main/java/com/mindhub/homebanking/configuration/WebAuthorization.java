@@ -18,14 +18,14 @@ public class WebAuthorization extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
-                .antMatchers("/web/index.html/**").hasAuthority("CLIENT")
+                .antMatchers("/web/index.html").permitAll()
                 .antMatchers("/api/**").hasAuthority("CLIENT")
                 .antMatchers("/**").permitAll();
 
         http.formLogin()
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .loginPage("/app/loggin");
+                .loginPage("/app/login");
 
         http.logout().logoutUrl("app/logout");
 
