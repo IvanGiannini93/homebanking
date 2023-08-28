@@ -28,6 +28,13 @@ public class HomebankingApplication {
 								  TransactionRepository transactionRepository, LoanRepository loanRepository,
 								  ClientLoanRepository clientLoanRepository, CardRepository cardRepository){
 		return args -> {
+			Client clientAdmin = new Client();
+			clientAdmin.setFirstName("admin");
+			clientAdmin.setLastName("admin");
+			clientAdmin.setEmail("admin@mhadmin.com");
+			clientAdmin.setPassword(passwordEncoder.encode("123456"));
+			clientRepository.save(clientAdmin);
+
 			Client client = new Client();
 			client.setFirstName("Melba");
 			client.setLastName("Morel");
