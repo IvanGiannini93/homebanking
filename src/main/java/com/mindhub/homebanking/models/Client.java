@@ -89,7 +89,8 @@ public class Client {
         return accounts;
     }
 
-    public void setAccount(Account account) {
+    public void addAccount(Account account) {
+        account.setClient(this);
         this.accounts.add(account);
     }
 

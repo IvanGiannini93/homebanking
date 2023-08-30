@@ -41,7 +41,6 @@ public class HomebankingApplication {
 			client.setEmail("melba.morel@gmail.com");
 			client.setPassword(passwordEncoder.encode("123456"));
 			clientRepository.save(client);
-
 			Client client2 = new Client("Rodrigo","Ribeiro",
 					"rodrigoRibeiro@gmail.com",passwordEncoder.encode("654321"));
 			clientRepository.save(client2);
