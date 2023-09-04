@@ -31,18 +31,18 @@ public class TransactionController {
 
     @Transactional
     @RequestMapping(path = "/transactions", method = RequestMethod.POST)
-    public ResponseEntity<Object> transaction(@RequestParam Double ammount, @RequestParam String description,
-                                              @RequestParam String fromNumber, @RequestParam String toNumber,
+    public ResponseEntity<Object> transaction(@RequestParam Double amount, @RequestParam String description,
+                                              @RequestParam String fromAccountNumber, @RequestParam String toAccountNumber,
                                               Authentication authentication){
         LocalDateTime dateTime = LocalDateTime.now();
         if(authentication == null) {
             return new ResponseEntity<>("Not connection", HttpStatus.FORBIDDEN);
         }
-        if(ammount == null || description.isEmpty() || fromNumber.isEmpty() || toNumber.isEmpty() ||
-                fromNumber.equals(toNumber)) {
+        if(amount == null || description.isEmpty() || fromAccountNumber.isEmpty() || toAccountNumber.isEmpty() ||
+                fromAccountNumber.equals(toAccountNumber)) {
             return new ResponseEntity<>("Invalid request.", HttpStatus.BAD_REQUEST);
         }
-        Account fromAccount = accountRepository.findByNumber(fromNumber);
+        Account fromAccount = accountRepository.findByNumber(fromAccountNumber);
         if(fromAccount == null) {
             return new ResponseEntity<>("Non-existent origin account", HttpStatus.FORBIDDEN);
         }
@@ -53,15 +53,15 @@ public class TransactionController {
         if(!client.getAccounts().contains(fromAccount)) {
             return new ResponseEntity<>("Invalid account", HttpStatus.FORBIDDEN);
         }
-        Account toAccount = accountRepository.findByNumber(toNumber);
+        Account toAccount = accountRepository.findByNumber(toAccountNumber);
         if(toAccount == null) {
             return new ResponseEntity<>("Non-existent destination account", HttpStatus.FORBIDDEN);
         }
-        if(fromAccount.getBalance() < ammount) {
+        if(fromAccount.getBalance() < amount) {
             return new ResponseEntity<>("Insufficient balance", HttpStatus.FORBIDDEN);
         }
-        Transaction debitTransaction = new Transaction(TransactionType.DEBIT, "desc", ammount * -1, dateTime, fromAccount);
-        Transaction creditTransaction = new Transaction(TransactionType.CREDIT, "desc", ammount, dateTime, toAccount);
+        Transaction debitTransaction = new Transaction(TransactionType.DEBIT, "desc", amount * -1, dateTime, fromAccount);
+        Transaction creditTransaction = new Transaction(TransactionType.CREDIT, "desc", amount, dateTime, toAccount);
         transactionRepository.save(debitTransaction);
         transactionRepository.save(creditTransaction);
         fromAccount.setBalance(debitTransaction.getAmount());

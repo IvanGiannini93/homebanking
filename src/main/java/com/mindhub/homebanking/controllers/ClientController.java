@@ -48,7 +48,7 @@ public class ClientController {
     }
 
    @RequestMapping("/clients/current")
-    public ClientDTO connection(Authentication authentication){
+    public ClientDTO current(Authentication authentication){
         if(authentication != null){
             Client client = clientRepository.findByEmail(authentication.getName());
             if(client != null){

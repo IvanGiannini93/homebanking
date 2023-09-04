@@ -5,10 +5,10 @@ import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,18 +39,29 @@ public class AccountController {
     public AccountDTO getAccount(@PathVariable Long id){
         return new AccountDTO(accountRepository.findById(id).orElse(null));
     }
+    @RequestMapping(value = "/clients/current/accounts")
+    public ResponseEntity<Object> getAccount(Authentication authentication){
+        if(authentication == null){
+            return new ResponseEntity<>("Not connection", HttpStatus.FORBIDDEN);
+        }
+        Client client = clientRepository.findByEmail(authentication.getName());
+        if(client != null){
+            List<AccountDTO> accounts = client.getAccounts().stream().map(account -> new AccountDTO(account)).collect(Collectors.toList());
+            return new ResponseEntity<>(accounts, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Invalid user", HttpStatus.FORBIDDEN);
+    }
 
     @RequestMapping(value = "/clients/current/accounts", method = RequestMethod.POST)
     public ResponseEntity<Object> createAccount(Authentication authentication){
         int clientAccounts = 0;
         LocalDate createDate = LocalDate.now();
         if(authentication != null){
-            Client client = clientRepository.findByEmail(authentication.name());
+            Client client = clientRepository.findByEmail(authentication.getName());
             if(client != null){
                 clientAccounts = client.getAccounts().size();
                 if(clientAccounts < MAX_ACCOUNTS_PERMITTED){
-                    int randomNumber = generateRandomNumber();
-                    String number = PREFIX_NUMBER + randomNumber;
+                    String number = generateRandomNumber();
                     Account newAccount = new Account(number, createDate, INIT_AMOUNT, client);
                     accountRepository.save(newAccount);
                     System.out.println(newAccount.getId());
@@ -71,10 +82,16 @@ public class AccountController {
         }
     }
 
-    private Integer generateRandomNumber(){
+    private String generateRandomNumber(){
+        String numberAccount = "";
         int min = 100000;
         int max = 999999;
         Random random = new Random();
-        return random.nextInt(max - min + 1) + min;
+        int randomNumber = random.nextInt(max - min + 1) + min;
+        numberAccount = PREFIX_NUMBER + randomNumber;
+        if(accountRepository.existsByNumber(numberAccount)){
+            generateRandomNumber();
+        }
+        return numberAccount;
     }
 }

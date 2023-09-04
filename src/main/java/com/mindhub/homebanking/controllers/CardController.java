@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.controllers;
 
+import com.mindhub.homebanking.dtos.CardDTO;
 import com.mindhub.homebanking.models.Card;
 import com.mindhub.homebanking.models.CardColor;
 import com.mindhub.homebanking.models.CardType;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -31,8 +33,21 @@ public class CardController {
     @Autowired
     private ClientRepository clientRepository;
 
-    @RequestMapping(path = "/api/clients/current/cards", method = RequestMethod.POST)
-    public ResponseEntity<Object> createCard(@RequestParam CardType type, @RequestParam CardColor color,
+    @RequestMapping("/clients/current/cards")
+    public ResponseEntity<Object> getCards(Authentication authentication){
+        if(authentication == null){
+            return new ResponseEntity<>("Not connection", HttpStatus.FORBIDDEN);
+        }
+        Client client= clientRepository.findByEmail(authentication.getName());
+        if(client != null){
+            List<CardDTO> cards = new ArrayList<>();
+            cards = client.getCards().stream().map(card -> new CardDTO(card)).collect(Collectors.toList());
+            return new ResponseEntity<>(cards, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Invalid user", HttpStatus.FORBIDDEN);
+    }
+    @RequestMapping(path = "/clients/current/cards", method = RequestMethod.POST)
+    public ResponseEntity<Object> createCard(@RequestParam CardType cardType, @RequestParam CardColor cardColor,
                                              Authentication authentication){
         String cardHolder = "";
         String number = "";
@@ -44,17 +59,17 @@ public class CardController {
             if(client != null){
                 Set<Card> cards = client.getCards();
                 List<Card> cardsByType = cards.stream().filter(card ->
-                        card.getCardType().name().equals(type.name())).collect(Collectors.toList());
+                        card.getCardType().name().equals(cardType.name())).collect(Collectors.toList());
                 if(cardsByType.size() < MAX_CARDS_PERMITTED){
-                    if(type != null && !type.name().isEmpty() && color != null && !color.name().isEmpty()){
+                    if(cardType != null && !cardType.name().isEmpty() && cardColor != null && !cardColor.name().isEmpty()){
                         cardHolder = client.getFirstName().toUpperCase() + " " + client.getLastName().toUpperCase();
                         number = generateNumber();
                         cvv = generateCvv();
-                        Card newCard = new Card(cardHolder, type, color, number, cvv, thruDate, fromDate, client);
+                        Card newCard = new Card(cardHolder, cardType, cardColor, number, cvv, thruDate, fromDate, client);
                         cardRepository.save(newCard);
                         client.addCard(newCard);
                         clientRepository.save(client);
-                        return new ResponseEntity<>("Card create success", HttpStatus.CREATED);
+                        return new ResponseEntity<>("Card created successfully", HttpStatus.CREATED);
                     } else {
                         return new ResponseEntity<>("Type or color invalid", HttpStatus.BAD_REQUEST);
                     }
@@ -71,15 +86,18 @@ public class CardController {
 
 
     private String generateNumber() {
-        String number = "";
+        StringBuilder number = new StringBuilder();
         int min = 1000;
         int max = 9999;
         Random random = new Random();
         for (int i = 0; i < 4; i++) {
-            number += random.nextInt(max - min + 1) + min + "-";
+            number.append(random.nextInt(max - min + 1) + min).append("-");
         }
-        number = number.substring(0, number.length() - 2);
-        return number;
+        number = new StringBuilder(number.substring(0, number.length() - 1));
+        if(cardRepository.existsByNumber(number.toString())){
+            generateNumber();
+        }
+        return number.toString();
     }
     private int generateCvv() {
         int min = 100;
