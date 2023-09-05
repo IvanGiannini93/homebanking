@@ -1,8 +1,8 @@
 package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.ClientDTO;
-import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.ClientRepository;
+import com.mindhub.homebanking.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +20,18 @@ public class ClientController {
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
+    private ClientService clientService;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/clients")
     public List<ClientDTO> getClients(){
-        return clientRepository.findAll().stream().map(client -> new ClientDTO(client)).collect(Collectors.toList());
+        return clientService.getClients();
     }
 
     @RequestMapping("/clients/{id}")
     public ClientDTO getClient(@PathVariable Long id){
-        return new ClientDTO(clientRepository.findById(id).orElse(null));
+        return clientService.getClient(id);
     }
 
     @RequestMapping(path = "/clients", method = RequestMethod.POST)
@@ -43,17 +45,14 @@ public class ClientController {
         if (clientRepository.findByEmail(email) !=  null) {
             return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
         }
-        clientRepository.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
+        clientService.register(firstName,lastName,email,passwordEncoder.encode(password));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
    @RequestMapping("/clients/current")
     public ClientDTO current(Authentication authentication){
         if(authentication != null){
-            Client client = clientRepository.findByEmail(authentication.getName());
-            if(client != null){
-                return new ClientDTO(client);
-            }
+            return clientService.current(authentication);
         }
         return null;
     }
