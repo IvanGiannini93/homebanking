@@ -19,15 +19,15 @@ public class WebAuthorization extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/api/login","/api/clients").permitAll()
+        http.authorizeRequests().antMatchers("/**").permitAll();
+                /*.antMatchers(HttpMethod.POST,"/api/login","/api/clients").permitAll()
                 .antMatchers("/web/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/clients/current").hasAnyAuthority("ADMIN","CLIENT")
                 .antMatchers("/api/clients", "/h2-console/**","/api/clients/{id}", "/api/accounts",
                         "/api/accounts/{id}").hasAuthority("ADMIN")
                 .antMatchers("/api/clients/current/accounts",
                         "/api/clients/current/cards", "/api/transactions").hasAuthority("CLIENT")
-                .anyRequest().denyAll();
+                .anyRequest().denyAll();*/
 
         http.formLogin()
                 .usernameParameter("email")

@@ -35,7 +35,7 @@ public class ClientServiceImpl implements ClientService {
     public ClientDTO current(Authentication authentication) {
         Client client = clientRepository.findByEmail(authentication.getName());
         if(client != null){
-            new ClientDTO(client);
+           return new ClientDTO(client);
         }
         return null;
     }
