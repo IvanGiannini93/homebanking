@@ -8,6 +8,7 @@ import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.CardRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.service.CardService;
+import com.mindhub.homebanking.utils.CardUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -41,32 +42,15 @@ public class CardServiceImpl implements CardService {
         LocalDate fromDate = LocalDate.now();
         LocalDate thruDate = fromDate.plusYears(YEAR_TO_EXPIRED);
         cardHolder = client.getFirstName().toUpperCase() + " " + client.getLastName().toUpperCase();
-        number = generateNumber();
-        cvv = generateCvv();
+        number = CardUtils.getCardNumber();
+        while(cardRepository.existsByNumber(number)){
+            number = CardUtils.getCardNumber();
+        }
+        cvv = CardUtils.getCvv();
         Card newCard = new Card(cardHolder, cardType, cardColor, number, cvv, thruDate, fromDate, client);
         cardRepository.save(newCard);
         client.addCard(newCard);
         clientRepository.save(client);
     }
 
-    private String generateNumber() {
-        StringBuilder number = new StringBuilder();
-        int min = 1000;
-        int max = 9999;
-        Random random = new Random();
-        for (int i = 0; i < 4; i++) {
-            number.append(random.nextInt(max - min + 1) + min).append("-");
-        }
-        number = new StringBuilder(number.substring(0, number.length() - 1));
-        if(cardRepository.existsByNumber(number.toString())){
-            generateNumber();
-        }
-        return number.toString();
-    }
-    private int generateCvv() {
-        int min = 100;
-        int max = 999;
-        Random random = new Random();
-        return random.nextInt(max - min + 1) + min;
-    }
 }

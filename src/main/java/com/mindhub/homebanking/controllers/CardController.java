@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,7 +34,7 @@ public class CardController {
     private CardService cardService;
 
 
-    @RequestMapping("/clients/current/cards")
+    @GetMapping("/clients/current/cards")
     public ResponseEntity<Object> getCards(Authentication authentication){
         if(authentication == null){
             return new ResponseEntity<>("Not connection", HttpStatus.FORBIDDEN);
@@ -49,7 +46,7 @@ public class CardController {
         }
         return new ResponseEntity<>("Invalid user", HttpStatus.FORBIDDEN);
     }
-    @RequestMapping(path = "/clients/current/cards", method = RequestMethod.POST)
+    @PostMapping(path = "/clients/current/cards")
     public ResponseEntity<Object> createCard(@RequestParam CardType cardType, @RequestParam CardColor cardColor,
                                              Authentication authentication){
 
