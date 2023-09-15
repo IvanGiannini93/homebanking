@@ -18,12 +18,12 @@ import java.util.List;
 public class HomebankingApplication {
 
 	@Autowired
-	PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
 	public static void main(String[] args) {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 
-	@Bean
+/*	@Bean
 	public CommandLineRunner init(ClientRepository clientRepository, AccountRepository accountRepository,
 								  TransactionRepository transactionRepository, LoanRepository loanRepository,
 								  ClientLoanRepository clientLoanRepository, CardRepository cardRepository){
@@ -109,5 +109,5 @@ public class HomebankingApplication {
 			cardRepository.save(card2);
 			cardRepository.save(card3);
 		};
-	}
+	} */
 }
